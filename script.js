@@ -3,6 +3,11 @@ const slideDots = Array.from(document.querySelectorAll(".hero-status span"));
 const drankkaartLink = document.querySelector(".drankkaart-link");
 const eventsSection = document.querySelector(".events");
 const eventCards = Array.from(document.querySelectorAll(".event-card"));
+const galleryImages = Array.from(document.querySelectorAll(".photo-grid img"));
+const lightbox = document.querySelector("[data-photo-lightbox]");
+const lightboxImage = document.querySelector("[data-lightbox-image]");
+const lightboxCaption = document.querySelector("[data-lightbox-caption]");
+const lightboxClose = document.querySelector("[data-lightbox-close]");
 let slideIndex = 0;
 
 if (drankkaartLink) {
@@ -30,6 +35,63 @@ if (eventsSection && eventCards.length) {
   eventCards.forEach((card) => {
     card.addEventListener("mouseenter", () => setEventBackground(card));
     card.addEventListener("focus", () => setEventBackground(card));
+  });
+}
+
+if (lightbox && lightboxImage && lightboxClose) {
+  let activeGalleryImage = null;
+
+  const openLightbox = (image) => {
+    activeGalleryImage = image;
+    lightboxImage.src = image.currentSrc || image.src;
+    lightboxImage.alt = image.alt || "Vergrote foto";
+
+    if (lightboxCaption) {
+      lightboxCaption.textContent = image.alt || "";
+    }
+
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lightbox-open");
+    lightboxClose.focus();
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+    lightboxImage.removeAttribute("src");
+
+    if (activeGalleryImage) {
+      activeGalleryImage.focus();
+      activeGalleryImage = null;
+    }
+  };
+
+  galleryImages.forEach((image) => {
+    image.tabIndex = 0;
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-label", `Bekijk groter: ${image.alt || "foto"}`);
+    image.addEventListener("click", () => openLightbox(image));
+    image.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openLightbox(image);
+      }
+    });
+  });
+
+  lightboxClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+      closeLightbox();
+    }
   });
 }
 

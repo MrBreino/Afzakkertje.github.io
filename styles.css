@@ -29,6 +29,10 @@ body {
   font-family: Georgia, "Times New Roman", serif;
 }
 
+body.lightbox-open {
+  overflow: hidden;
+}
+
 body::before {
   position: fixed;
   inset: 0;
@@ -707,15 +711,91 @@ h2 {
   min-height: 230px;
   aspect-ratio: 1 / 1.06;
   border: 8px solid rgba(236, 216, 189, 0.72);
+  cursor: zoom-in;
   object-fit: cover;
   box-shadow: 0 16px 34px rgba(13, 5, 3, 0.28);
   transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+
+.photo-grid img:focus-visible {
+  outline: 3px solid #f4d69a;
+  outline-offset: 4px;
 }
 
 .photo-grid img:hover {
   transform: scale(1.035);
   filter: saturate(1.04) contrast(1.03);
   box-shadow: 0 22px 46px rgba(13, 5, 3, 0.42);
+}
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 54px);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(84, 27, 24, 0.36), transparent 36%),
+    rgba(12, 6, 4, 0.92);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.photo-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.photo-lightbox figure {
+  display: grid;
+  max-width: min(1180px, 94vw);
+  max-height: 88vh;
+  gap: 12px;
+  justify-items: center;
+  margin: 0;
+}
+
+.photo-lightbox img {
+  max-width: 100%;
+  max-height: calc(88vh - 42px);
+  border: 8px solid rgba(236, 216, 189, 0.82);
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.52);
+}
+
+.photo-lightbox figcaption {
+  max-width: 760px;
+  color: rgba(255, 247, 234, 0.82);
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgba(255, 247, 234, 0.32);
+  border-radius: 50%;
+  color: #fff7ea;
+  background: rgba(36, 16, 13, 0.7);
+  cursor: pointer;
+  font-size: 2rem;
+  line-height: 1;
+  backdrop-filter: blur(12px);
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  background: rgba(143, 45, 38, 0.82);
+  outline: none;
 }
 
 .reviews {
